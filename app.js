@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
@@ -12,6 +13,7 @@ const { PORT, MONGODB_CONN } = require('./utils/config');
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 app.use(helmet());
 app.use(cookieParser());
@@ -20,6 +22,13 @@ app.use(express.urlencoded({ extended: true }));
 mongoose.connect(MONGODB_CONN);
 
 app.use(requestLogger);
+
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
+
 app.use(routes);
 app.use(errorLogger);
 
