@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const { JWT_SECRET, NODE_ENV } = require('../utils/config');
+const { JWT_SECRET } = require('../utils/config');
 const { STATUS_OK, ERROR_CODE_UNIQUE } = require('../utils/constans');
 const BadRequest = require('../errors/BadRequest');
 const NotFoundError = require('../errors/NotFound');
@@ -43,7 +43,6 @@ const login = (req, res, next) => {
         maxAge: 3600000 * 24 * 7,
         httpOnly: true,
         sameSite: true,
-        secure: NODE_ENV === 'production',
       })
         .send({ token });
     })
