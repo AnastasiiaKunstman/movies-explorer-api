@@ -1,6 +1,5 @@
 require('dotenv').config();
 const express = require('express');
-const cors = require('cors');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
@@ -13,7 +12,6 @@ const { PORT, MONGODB_CONN } = require('./utils/config');
 
 const app = express();
 
-app.use(cors());
 app.use(express.json());
 app.use(helmet());
 app.use(cookieParser());
