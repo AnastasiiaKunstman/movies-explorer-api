@@ -7,6 +7,8 @@ const BadRequest = require('../errors/BadRequest');
 const NotFoundError = require('../errors/NotFound');
 const ConflictError = require('../errors/Conflict');
 
+const { USER_EMAIL_ERROR, ERROR_BAD_REQUEST, USER_NOT_FOUND } = require('../utils/errorMessages');
+
 const createUser = (req, res, next) => {
   const { name, email, password } = req.body;
 
@@ -24,9 +26,9 @@ const createUser = (req, res, next) => {
     }))
     .catch((err) => {
       if (err.code === ERROR_CODE_UNIQUE) {
-        next(new ConflictError('Пользователь с таким email уже существует'));
+        next(new ConflictError(USER_EMAIL_ERROR));
       } else if (err.name === 'ValidationError') {
-        next(new BadRequest('Переданы некорректные данные'));
+        next(new BadRequest(ERROR_BAD_REQUEST));
       } else {
         next(err);
       }
@@ -59,13 +61,13 @@ const updateProfile = (req, res, next) => {
   const { name, email } = req.body;
 
   User.findByIdAndUpdate(req.user._id, { name, email }, { new: true, runValidators: true })
-    .orFail(() => new NotFoundError('Пользователь по указанному _id не найден'))
+    .orFail(() => new NotFoundError(USER_NOT_FOUND))
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.code === ERROR_CODE_UNIQUE) {
-        next(new ConflictError('Пользователь с таким email уже существует'));
+        next(new ConflictError(USER_EMAIL_ERROR));
       } else if (err.name === 'ValidationError') {
-        next(new BadRequest('Переданы некорректные данные'));
+        next(new BadRequest(ERROR_BAD_REQUEST));
       } else {
         next(err);
       }

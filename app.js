@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const helmet = require('helmet');
+const cors = require('cors');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
@@ -15,6 +16,17 @@ const app = express();
 app.use(express.json());
 app.use(helmet());
 app.use(cookieParser());
+app.use(cors({
+  credentials: true,
+  origin: [
+    'http://diplom.akunstman.nomoredomains.xyz',
+    'https://diplom.akunstman.nomoredomains.xyz',
+    'localhost:3000',
+    'http://localhost:3000',
+  ],
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+}));
+
 app.use(express.urlencoded({ extended: true }));
 
 mongoose.connect(MONGODB_CONN);
