@@ -4,13 +4,15 @@ const ForbiddenError = require('../errors/Forbidden');
 const BadRequest = require('../errors/BadRequest');
 const NotFoundError = require('../errors/NotFound');
 
+const { ERROR_BAD_REQUEST, MOVIE_NOT_FOUND, ERROR_MOVIE_DELETE_FORBIDDEN } = require('../utils/errorMessages');
+
 const createMovie = (req, res, next) => {
   const { _id } = req.user;
   Movie.create({ owner: _id, ...req.body })
     .then((movie) => res.status(STATUS_OK).send(movie))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BadRequest('Переданы некорректные данные.'));
+        next(new BadRequest(ERROR_BAD_REQUEST));
       } else {
         next(err);
       }
@@ -26,10 +28,10 @@ const getMovies = (req, res, next) => {
 
 const deleteMovieById = (req, res, next) => {
   Movie.findById(req.params.movieId)
-    .orFail(() => new NotFoundError('Фильм не найден'))
+    .orFail(() => new NotFoundError(MOVIE_NOT_FOUND))
     .then((movie) => {
       if (!movie.owner.equals(req.user._id)) {
-        return next(new ForbiddenError('Недостаточно прав для удаления'));
+        return next(new ForbiddenError(ERROR_MOVIE_DELETE_FORBIDDEN));
       }
       return Movie.deleteOne(movie)
         .then(() => res.status(STATUS_OK).send({ message: 'Фильм удален' }))
@@ -37,7 +39,7 @@ const deleteMovieById = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequest('Переданы некорректные данные'));
+        next(new BadRequest(ERROR_BAD_REQUEST));
       } else {
         next(err);
       }
