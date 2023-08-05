@@ -21,10 +21,9 @@ app.use(cors({
   origin: [
     'http://diplom.akunstman.nomoredomains.xyz',
     'https://diplom.akunstman.nomoredomains.xyz',
-    'localhost:3000',
     'http://localhost:3000',
+    'https://localhost:3000',
   ],
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
 }));
 
 app.use(express.urlencoded({ extended: true }));
