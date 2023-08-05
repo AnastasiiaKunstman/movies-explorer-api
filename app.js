@@ -16,16 +16,7 @@ const app = express();
 app.use(express.json());
 app.use(helmet());
 app.use(cookieParser());
-app.use(cors({
-  credentials: true,
-  origin: [
-    'http://diplom.akunstman.nomoredomains.xyz',
-    'https://diplom.akunstman.nomoredomains.xyz',
-    'http://localhost:3000',
-    'https://localhost:3000',
-  ],
-}));
-
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
 mongoose.connect(MONGODB_CONN);

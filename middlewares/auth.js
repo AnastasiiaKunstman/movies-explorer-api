@@ -4,23 +4,18 @@ const UnauthorizedError = require('../errors/Unauthorized');
 const { AUTH_REQUIRED } = require('../utils/errorMessages');
 
 const auth = (req, res, next) => {
-  let token;
-
-  try {
-    token = req.cookies.jwt;
-  } catch (err) {
-    next(new UnauthorizedError(AUTH_REQUIRED));
+  const { authorization } = req.headers;
+  if (!authorization) {
+    throw new UnauthorizedError(AUTH_REQUIRED);
   }
-
+  const token = authorization.replace('Bearer ', '');
   let payload;
-
   try {
     payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret');
   } catch (err) {
     next(new UnauthorizedError(AUTH_REQUIRED));
   }
   req.user = payload;
-
   next();
 };
 

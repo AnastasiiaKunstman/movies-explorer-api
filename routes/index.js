@@ -14,7 +14,6 @@ router.use(auth);
 
 router.use('/users', userRouters);
 router.use('/movies', movieRouters);
-router.use('/signout', logout);
 
 router.use('/*', (req, res, next) => next(new NotFoundError(ERROR_NOT_FOUND)));
 
