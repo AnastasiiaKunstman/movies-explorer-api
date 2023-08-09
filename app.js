@@ -9,17 +9,17 @@ const routes = require('./routes/index');
 const limiter = require('./utils/rateLimit');
 const errorHandler = require('./errors/errorHandler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const { PORT } = require('./utils/config');
+const { PORT, MONGODB_ADRESS } = require('./utils/config');
 
 const app = express();
+app.use(cors());
 
 app.use(express.json());
 app.use(helmet());
 app.use(cookieParser());
-app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
-mongoose.connect('mongodb://127.0.0.1:27017/bitfilmsdb');
+mongoose.connect(MONGODB_ADRESS);
 
 app.use(requestLogger);
 
