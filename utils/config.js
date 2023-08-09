@@ -1,4 +1,4 @@
-const { PORT = 3003 } = process.env;
+const { PORT = 3001 } = process.env;
 const { MONGODB_ADRESS = 'mongodb://127.0.0.1:27017/bitfilmsdb' } = process.env;
 const { JWT_SECRET = 'some-secret-key' } = process.env;
 
