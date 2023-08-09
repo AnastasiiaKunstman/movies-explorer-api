@@ -12,7 +12,18 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { PORT, MONGODB_ADRESS } = require('./utils/config');
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  credentials: true,
+  origin: [
+    'http://diplom.akunstman.nomoredomains.xyz',
+    'https://diplom.akunstman.nomoredomains.xyz',
+    'http://api.diplom.akunstman.nomoredomains.xyz',
+    'https://api.diplom.akunstman.nomoredomains.xyz',
+    'http://localhost:3000',
+    'https://localhost:3000',
+  ],
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+}));
 
 app.use(express.json());
 app.use(helmet());
