@@ -1,4 +1,4 @@
-const { NODE_ENV, JWT_SECRET = 'JWT_SECRET' } = process.env;
+const { NODE_ENV, JWT_SECRET } = process.env;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
@@ -6,6 +6,7 @@ const { STATUS_OK, ERROR_CODE_UNIQUE } = require('../utils/constans');
 const BadRequest = require('../errors/BadRequest');
 const NotFoundError = require('../errors/NotFound');
 const ConflictError = require('../errors/Conflict');
+const { JWT_DEV_KEY } = require('../utils/config');
 
 const { USER_EMAIL_ERROR, ERROR_BAD_REQUEST, USER_NOT_FOUND } = require('../utils/errorMessages');
 
@@ -22,6 +23,7 @@ const createUser = (req, res, next) => {
       data: {
         name: user.name,
         email: user.email,
+        _id: user._id,
       },
     }))
     .catch((err) => {
@@ -40,7 +42,7 @@ const login = (req, res, next) => {
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
+      const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : JWT_DEV_KEY, { expiresIn: '7d' });
       res.send({ token });
     })
     .catch(next);
