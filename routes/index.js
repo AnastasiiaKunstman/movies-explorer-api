@@ -15,9 +15,6 @@ router.use(auth);
 router.use('/users', userRouters);
 router.use('/movies', movieRouters);
 
-router.use(auth, userRouters);
-router.use(auth, movieRouters);
-
 router.use('/*', (req, res, next) => next(new NotFoundError(ERROR_NOT_FOUND)));
 
 module.exports = router;

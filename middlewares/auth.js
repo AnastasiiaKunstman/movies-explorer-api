@@ -7,22 +7,17 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 
 const auth = (req, res, next) => {
   const { authorization } = req.headers;
-
-  if (!authorization || !authorization.startsWith) {
+  if (!authorization) {
     throw new UnauthorizedError(AUTH_REQUIRED);
   }
-
   const token = authorization.replace('Bearer ', '');
   let payload;
-
   try {
     payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : JWT_DEV_KEY);
   } catch (err) {
-    throw new UnauthorizedError(AUTH_REQUIRED);
+    next(new UnauthorizedError(AUTH_REQUIRED));
   }
-
   req.user = payload;
-
   next();
 };
 
