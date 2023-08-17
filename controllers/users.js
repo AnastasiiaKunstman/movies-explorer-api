@@ -1,7 +1,7 @@
+const { NODE_ENV, JWT_SECRET = 'JWT_SECRET' } = process.env;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const { JWT_SECRET } = require('../utils/config');
 const { STATUS_OK, ERROR_CODE_UNIQUE } = require('../utils/constans');
 const BadRequest = require('../errors/BadRequest');
 const NotFoundError = require('../errors/NotFound');
@@ -22,6 +22,7 @@ const createUser = (req, res, next) => {
       data: {
         name: user.name,
         email: user.email,
+        _id: user._id,
       },
     }))
     .catch((err) => {
@@ -40,13 +41,8 @@ const login = (req, res, next) => {
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
-      res.cookie('jwt', token, {
-        maxAge: 3600000 * 24 * 7,
-        httpOnly: true,
-        sameSite: true,
-      })
-        .send({ token });
+      const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
+      res.send({ token });
     })
     .catch(next);
 };
@@ -74,15 +70,9 @@ const updateProfile = (req, res, next) => {
     });
 };
 
-const logout = (req, res) => {
-  res.clearCookie('jwt')
-    .send({ message: 'Выход' });
-};
-
 module.exports = {
   createUser,
   login,
   getProfile,
   updateProfile,
-  logout,
 };

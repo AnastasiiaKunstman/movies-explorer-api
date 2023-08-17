@@ -1,7 +1,7 @@
 require('dotenv').config();
+const cors = require('cors');
 const express = require('express');
 const helmet = require('helmet');
-const cors = require('cors');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
@@ -9,27 +9,17 @@ const routes = require('./routes/index');
 const limiter = require('./utils/rateLimit');
 const errorHandler = require('./errors/errorHandler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const { PORT, MONGODB_CONN } = require('./utils/config');
+const { PORT, MONGODB_ADRESS } = require('./utils/config');
 
 const app = express();
+app.use(cors());
 
 app.use(express.json());
 app.use(helmet());
 app.use(cookieParser());
-app.use(cors({
-  credentials: true,
-  origin: [
-    'http://diplom.akunstman.nomoredomains.xyz',
-    'https://diplom.akunstman.nomoredomains.xyz',
-    'localhost:3000',
-    'http://localhost:3000',
-  ],
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-}));
-
 app.use(express.urlencoded({ extended: true }));
 
-mongoose.connect(MONGODB_CONN);
+mongoose.connect(MONGODB_ADRESS);
 
 app.use(requestLogger);
 

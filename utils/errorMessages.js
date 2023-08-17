@@ -1,5 +1,5 @@
 const ERRORS = {
-  AUTH_ERROR: 'Неправильные email или пароль',
+  AUTH_ERROR: 'Неправильные почта или пароль',
   AUTH_REQUIRED: 'Необходима авторизация',
   ERROR_BAD_REQUEST: 'Переданы некорректные данные',
   MOVIE_NOT_FOUND: 'Фильм не найден',

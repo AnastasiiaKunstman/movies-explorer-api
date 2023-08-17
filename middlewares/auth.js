@@ -1,26 +1,29 @@
 const { NODE_ENV, JWT_SECRET = 'JWT_SECRET' } = process.env;
 const jwt = require('jsonwebtoken');
 const UnauthorizedError = require('../errors/Unauthorized');
-const { AUTH_REQUIRED } = require('../utils/errorMessages');
 
 const auth = (req, res, next) => {
-  let token;
+  const { authorization } = req.headers;
+<<<<<<< HEAD
 
-  try {
-    token = req.cookies.jwt;
-  } catch (err) {
-    next(new UnauthorizedError(AUTH_REQUIRED));
+=======
+>>>>>>> 1b999919e07aa0f55cc9592ae577db49d9f403a0
+  if (!authorization) {
+    throw new UnauthorizedError('Неправильные почта или пароль');
   }
+  const token = authorization.replace('Bearer ', '');
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1b999919e07aa0f55cc9592ae577db49d9f403a0
   let payload;
-
   try {
     payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret');
   } catch (err) {
-    next(new UnauthorizedError(AUTH_REQUIRED));
+    next(new UnauthorizedError('Неправильные почта или пароль'));
   }
-  req.user = payload;
 
+  req.user = payload;
   next();
 };
 
