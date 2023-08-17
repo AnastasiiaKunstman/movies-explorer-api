@@ -30,9 +30,7 @@ const createUser = (req, res, next) => {
         next(new ConflictError(USER_EMAIL_ERROR));
       } else if (err.name === 'ValidationError') {
         next(new BadRequest(ERROR_BAD_REQUEST));
-      } else {
-        next(err);
-      }
+      } else next(err);
     });
 };
 
@@ -42,9 +40,19 @@ const login = (req, res, next) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
-      res.send({ token });
+      res.cookie('jwt', token, {
+        maxAge: 3600000 * 7 * 24,
+        httpOnly: true,
+        sameSite: 'None',
+        secure: true,
+      })
+        .send({ token });
     })
     .catch(next);
+};
+
+const logout = (req, res) => {
+  res.clearCookie('jwt').send({ message: 'Выход' });
 };
 
 const getProfile = (req, res, next) => {
@@ -64,15 +72,14 @@ const updateProfile = (req, res, next) => {
         next(new ConflictError(USER_EMAIL_ERROR));
       } else if (err.name === 'ValidationError') {
         next(new BadRequest(ERROR_BAD_REQUEST));
-      } else {
-        next(err);
-      }
+      } else next(err);
     });
 };
 
 module.exports = {
   createUser,
   login,
+  logout,
   getProfile,
   updateProfile,
 };

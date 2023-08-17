@@ -9,10 +9,10 @@ const routes = require('./routes/index');
 const limiter = require('./utils/rateLimit');
 const errorHandler = require('./errors/errorHandler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const { PORT, MONGODB_ADRESS } = require('./utils/config');
+const { PORT, MONGODB_ADRESS, corsOptions } = require('./utils/config');
 
 const app = express();
-app.use(cors());
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(helmet());
